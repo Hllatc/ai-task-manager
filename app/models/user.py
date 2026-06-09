@@ -2,7 +2,8 @@ from sqlalchemy import Column
 from sqlalchemy import Integer
 from sqlalchemy import String
 from app.database import Base
-
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship
 
 class User(Base):
 
@@ -12,4 +13,6 @@ class User(Base):
     username = Column(String, unique=True)
     email = Column(String, unique=True)
     password = Column(String)
+
+    tasks = relationship("Task", back_populates="user")
 

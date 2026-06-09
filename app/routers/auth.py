@@ -26,19 +26,38 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
 
 from app.core.security import verify_password, create_access_token
 from app.schemas.user import UserLogin
-
+from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import Depends
 @router.post("/login")
-def login(user: UserLogin, db: Session = Depends(get_db)):
+def login(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db)
+):
 
-    db_user = db.query(User).filter(User.email == user.email).first()
+    db_user = (
+        db.query(User)
+        .filter(User.email == form_data.username)
+        .first()
+    )
 
     if not db_user:
-        return {"error": "User not found"}
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid credentials"
+        )
 
-    if not verify_password(user.password, db_user.hashed_password):
-        return {"error": "Wrong password"}
+    if not verify_password(
+        form_data.password,
+        db_user.password
+    ):
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid credentials"
+        )
 
-    token = create_access_token({"sub": db_user.email})
+    token = create_access_token(
+        {"sub": db_user.email}
+    )
 
     return {
         "access_token": token,
