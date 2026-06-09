@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\app",
+    "\\app\\core",
+    "\\app\\dependencies",
+    "\\app\\models",
+    "\\app\\routers",
+    "\\app\\schemas"
+  ],
+  "PreviewInSolutionExplorer": false
+}
